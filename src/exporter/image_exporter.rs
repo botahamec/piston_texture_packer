@@ -9,14 +9,14 @@ use std::marker::PhantomData;
 #[derive(Copy, Clone)]
 pub struct ImageExporter<T>(PhantomData<T>);
 
-impl<T: Texture<Pixel = Rgba<u8>>> ImageExporter<T> {
+impl<T: Texture<Pixel = Rgba<u16>>> ImageExporter<T> {
     /// Export a texture to an image type.
     pub fn export(texture: &T) -> ExportResult<DynamicImage> {
         <Self as Exporter<T>>::export(texture)
     }
 }
 
-impl<T: Texture<Pixel = Rgba<u8>>> Exporter<T> for ImageExporter<T> {
+impl<T: Texture<Pixel = Rgba<u16>>> Exporter<T> for ImageExporter<T> {
     type Output = DynamicImage;
 
     fn export(texture: &T) -> ExportResult<DynamicImage> {
@@ -46,9 +46,9 @@ impl<T: Texture<Pixel = Rgba<u8>>> Exporter<T> for ImageExporter<T> {
         }
 
         if let Some(image_buffer) =
-            ImageBuffer::<Rgba<u8>, Vec<u8>>::from_raw(width, height, pixels)
+            ImageBuffer::<Rgba<u16>, Vec<u16>>::from_raw(width, height, pixels)
         {
-            Ok(DynamicImage::ImageRgba8(image_buffer))
+            Ok(DynamicImage::ImageRgba16(image_buffer))
         } else {
             Err("Can't export texture".to_string())
         }
